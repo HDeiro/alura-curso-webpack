@@ -7,6 +7,8 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 
 let plugins = [];
 
+let SERVICE_URL = JSON.stringify("http://localhost:3000");
+
 plugins.push(new htmlWebpackPlugin({
     hash: true, //Add a hash to the invoked files in order to prevent caching
     minify: {
@@ -28,6 +30,8 @@ plugins.push(new webpack.optimize.CommonsChunkPlugin({
 }));
 
 if(process.env.NODE_ENV == 'production') {
+    SERVICE_URL = JSON.stringify("http://api-address");
+
     plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
     plugins.push(new babiliPlugin());
     plugins.push(new optimizeCSSAssetsPlugin({
@@ -40,6 +44,10 @@ if(process.env.NODE_ENV == 'production') {
         }
     }));
 }
+
+plugins.push(new webpack.DefinePlugin({
+    SERVICE_URL: SERVICE_URL
+}));
 
 module.exports = {
     entry: {
