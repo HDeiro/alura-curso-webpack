@@ -3,15 +3,26 @@ const babiliPlugin = require('babili-webpack-plugin');
 const extractTextPlugin = require('extract-text-webpack-plugin'); 
 const optimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const webpack = require('webpack');
+const htmlWebpackPlugin = require('html-webpack-plugin');
 
 let plugins = [];
 
+plugins.push(new htmlWebpackPlugin({
+    hash: true, //Add a hash to the invoked files in order to prevent caching
+    minify: {
+        html5: true,
+        collapseWhitespace: true,
+        removeComments: true
+    },
+    filename: 'index.html',
+    template: __dirname + '/main.html'
+}));
 plugins.push(new extractTextPlugin('styles.css'));
 plugins.push(new webpack.ProvidePlugin({
     "$":'jquery/dist/jquery.js',
     'jQuery':'jquery/dist/jquery.js'
 }));
-plugins.push(new webpack.optimize.CommonsChunkPlugins({
+plugins.push(new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
     filename: 'vendor.bundle.js',
 }));
@@ -41,8 +52,7 @@ module.exports = {
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
-        publicPath: 'dist'
+        path: path.resolve(__dirname, 'dist')
     },
     module: {
         rules: [
